@@ -5,7 +5,6 @@ import {
 import { tools, functionMaps } from './tools/index.js'
 
 // Create a Bedrock Runtime client in the AWS Region you want to use.
-console.log(process.env.REGION)
 const client = new BedrockRuntimeClient({ region: process.env.REGION });
 
 // Set the model ID, e.g., Claude 3 Haiku.
@@ -32,24 +31,22 @@ export async function agent(message) {
       });
       // calling LLM
       const response = await client.send(command);
-      console.log(response)
+      console.log('LLM response: ' + response.stopReason)
       if (response.stopReason === 'tool_use') {
         const tools2use = response.output.message.content.filter(item => {
           return 'toolUse' in item
         })
-        console.log(tools2use)
         messages.push(response.output.message)
 
         const toolsResults = []
         for (const toolCall of tools2use) {
           const name = toolCall.toolUse.name
           const args = toolCall.toolUse.input
-          console.log(name)
-          console.log(args)
+          console.log(`Should use tool: ${name} with args: ${JSON.stringify(args)}`)
           // call the function
           const functionToCall = functionMaps[name]
           const funcResult = await functionToCall(args)
-          console.log(`Function calling result: ${JSON.stringify(funcResult)}`)
+          console.log(`Result of tool use: ${JSON.stringify(funcResult).slice(0, 200)} ...`)
           // add function call result to prompt
           const toolResult = {
             toolUseId: toolCall.toolUse.toolUseId,
@@ -67,6 +64,7 @@ export async function agent(message) {
         })
       } else {
         res = response.output.message.content[0].text
+        console.log(`Agent loop ends, response: ${res}`)
         break
       }
     }

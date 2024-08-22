@@ -8,7 +8,7 @@ const port = 3000;
 app.use(express.json());
 
 app.post('/v1/chat/completions', async (req, res) => {
-  console.log(req.body)
+  console.log('User request: ' + req.body.messages[0].content)
   const result = await agent(req.body.messages[0].content)
   const response = {
     "id": "chatcmpl-abc123",

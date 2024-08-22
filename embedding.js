@@ -43,10 +43,8 @@ async function queryByEmbeddingQdrant(vector, threshold, count) {
 
 export async function getContentByStr(input, threshold, count) {
   const vector = await content2embedding(input)
-  console.log(vector)
   // const data = await queryByEmbedding(embedding, threshold, count)
   const data = await queryByEmbeddingQdrant(vector, threshold, count)
-  console.log(data)
   // logger.info(`Query from embedding: ${JSON.stringify(data)}`)
   if (data.length > 0) {
     let content = ''
