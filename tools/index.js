@@ -11,7 +11,7 @@ export const tools = {
     {
       toolSpec: {
         name: "searchFromKB",
-        description: "Use this tool to get API document if user ask you to do anything such as shopping, book flight and finding music",
+        description: 'Use this tool to get API document if user ask you to do anything such as shopping, book flight and control home devices',
         inputSchema: {
           json: {
             type: "object",
